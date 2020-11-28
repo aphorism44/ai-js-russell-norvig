@@ -1,0 +1,7 @@
+This repository contains exercises and explorations in artificial intelligence using JavaScript.
+
+Currently using CommonJS. Unit testing with Mocha.
+
+Artificial Intelligence: A Modern Approach, by Norvig and Russell (3rd ed). This was my university AI textbook, but I am reviewing it, studying more than the class covered, and making personal projects. This textbook uses pseudocode, and is not tied to any particular language.
+
+"Many problems in the real, physical world are contingency problems. For this reason, many people keep their eyes open while walking around or driving." - Peter Norvig

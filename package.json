@@ -1,0 +1,25 @@
+{
+  "name": "ai-js-russell-norvig",
+  "version": "1.0.0",
+  "description": "AI from textbook",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec tests/*-spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphorism44/ai-js-russell-norvig.git"
+  },
+  "keywords": [
+    "ai"
+  ],
+  "author": "D Jesse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aphorism44/ai-js-russell-norvig/issues"
+  },
+  "homepage": "https://github.com/aphorism44/ai-js-russell-norvig#readme",
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  }
+}
