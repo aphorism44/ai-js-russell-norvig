@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AI from textbook",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "mocha -R spec tests/*-spec.js"
   },
@@ -21,5 +22,8 @@
   "homepage": "https://github.com/aphorism44/ai-js-russell-norvig#readme",
   "devDependencies": {
     "mocha": "^8.2.1"
+  },
+  "dependencies": {
+    "ramda": "^0.27.1"
   }
 }
