@@ -101,43 +101,70 @@ describe("SearchClasses", function() {
       assert.equal(JSON.stringify(rightNode.state), JSON.stringify({ vacuumLocation: 'right', dirtLocations: ['left', 'right'] }));
       assert.equal(JSON.stringify(suckNode.state), JSON.stringify({ vacuumLocation: 'right', dirtLocations: ['left'] }));
     });
-    it("max priority queue should order Nodes left to right by decreasing cost", function() {
+    it("max priority queue should order Nodes by decreasing cost", function() {
       let n1 = new Node(initialState, null, null, 76);
-      let n2 = new Node(initialState, null, null, -23);
+      let n2 = new Node({vacuumLocation: 'left', dirtLocations: []}, null, null, -23);
       let n3 = new Node(initialState, null, null, 0);
       let n4 = new Node(initialState, null, null, 42);
-      let n5 = new Node(initialState, null, null, 12);
+      let n5 = new Node({vacuumLocation: 'right', dirtLocations: []}, null, null, 12);
+      let n6 = new Node(initialState, null, null, 42);
       let priorityQueue = new MaxPriorityQueue();
       priorityQueue.insert(n1);
       priorityQueue.insert(n2);
       priorityQueue.insert(n3);
       priorityQueue.insert(n4);
       priorityQueue.insert(n5);
-      //console.log(priorityQueue);
+      priorityQueue.insert(n6);
+      assert.equal(priorityQueue.size(), 6);
+      assert(priorityQueue.containsNodeState(initialState));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      
+      assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
+      assert.equal(priorityQueue.size(), 6);
+      priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
+      assert.equal(priorityQueue.size(), 5);
+      assert(!priorityQueue.containsNodeState(initialState));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let largest = priorityQueue.extractMax().pathCost;
       while (!priorityQueue.isEmpty()) {
         let next = priorityQueue.extractMax().pathCost;
-        assert(largest > next);
+        assert(largest >= next);
         largest = next;
       }
     });
-    it("min priority queue should order Nodes left to right by increasting cost", function() {
+    it("min priority queue should order Nodes by increasting cost", function() {
       let n1 = new Node(initialState, null, null, 76);
-      let n2 = new Node(initialState, null, null, -23);
+      let n2 = new Node({vacuumLocation: 'left', dirtLocations: []}, null, null, -23);
       let n3 = new Node(initialState, null, null, 0);
       let n4 = new Node(initialState, null, null, 42);
-      let n5 = new Node(initialState, null, null, 12);
+      let n5 = new Node({vacuumLocation: 'right', dirtLocations: []}, null, null, 12);
+      let n6 = new Node(initialState, null, null, 42);
       let priorityQueue = new MinPriorityQueue();
       priorityQueue.insert(n1);
       priorityQueue.insert(n2);
       priorityQueue.insert(n3);
       priorityQueue.insert(n4);
       priorityQueue.insert(n5);
-      //console.log(priorityQueue);
+      priorityQueue.insert(n6);
+      assert.equal(priorityQueue.size(), 6);
+      assert(priorityQueue.containsNodeState(initialState));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
+      assert.equal(priorityQueue.size(), 6);
+      priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
+      assert.equal(priorityQueue.size(), 5);
+      assert(!priorityQueue.containsNodeState(initialState));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let smallest = priorityQueue.extractMin().pathCost;
       while (!priorityQueue.isEmpty()) {
         let next = priorityQueue.extractMin().pathCost;
-        assert(smallest < next);
+        assert(smallest <= next);
         smallest = next;
       }
     });

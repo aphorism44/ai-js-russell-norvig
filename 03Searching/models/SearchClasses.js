@@ -84,6 +84,9 @@ class MaxPriorityQueue {
   isEmpty() {
     return this.heap.length < 1;
   }
+  size() {
+    return this.heap.length;
+  }
   swap(index1, index2) {
     const tmp = this.heap[index1];
     this.heap[index1] = this.heap[index2];
@@ -135,6 +138,27 @@ class MaxPriorityQueue {
       this.heapify(smallest);
     }
   }
+  containsNodeState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
+        return true;
+    return false;
+  }
+  returnNodeByState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
+        return this.heap[i].state;
+    return null;
+  }
+  removeNodeByState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state)) {
+        let deleteNode = this.heap[i].state;
+        this.heap.array.splice(i, 1);
+        return deleteNode;
+      }
+    return null;
+  }
   getLeftChildIndex(index) {
     return index * 2 + 1;
   }
@@ -152,6 +176,9 @@ class MinPriorityQueue {
   }
   isEmpty() {
     return this.heap.length < 1;
+  }
+  size() {
+    return this.heap.length;
   }
   swap(index1, index2) {
     const tmp = this.heap[index1];
@@ -203,6 +230,27 @@ class MinPriorityQueue {
       this.swap(smallest, index);
       this.heapify(smallest);
     }
+  }
+  containsNodeState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
+        return true;
+    return false;
+  }
+  returnNodeByState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
+        return this.heap[i].state;
+    return null;
+  }
+  removeNodeByState(state) {
+    for (var i = 0; i < this.heap.length; i++)
+      if (JSON.stringify(this.heap[i].state) == JSON.stringify(state)) {
+        let deleteNode = this.heap[i].state;
+        this.heap.array.splice(i, 1);
+        return deleteNode;
+      }
+    return null;
   }
   getLeftChildIndex(index) {
     return index * 2 + 1;
