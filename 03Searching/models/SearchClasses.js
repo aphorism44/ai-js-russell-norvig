@@ -1,5 +1,43 @@
 import R from 'ramda';
 
+//problem (abstract sans functions), p. 66
+class Problem {
+  constructor(initialState, goalStateSet, actionFunction, transitionFunction, stepCostFunction) {
+    this.initialState = initialState;
+    this.goalStateSet = goalStateSet;
+    this.actionFunction = actionFunction;
+    this.transitionFunction = transitionFunction;
+    this.stepCostFunction = stepCostFunction;
+  }
+  actions(state) {
+    return this.actionFunction(state);
+  }
+  results(action, state) {
+    return this.transitionFunction(action, state);
+  }
+  goalTest(state) {
+    return this.goalStateSet.has(state);
+  }
+  stepCost(state, action) {
+    return this.stepCostFunction(state, action);
+  }
+}
+
+//node object, p. 79
+class Node {
+  constructor(state, parent, action, pathCost) {
+    this.state = state;
+    this.parent = parent;
+    this.action = action;
+    this.pathCost = pathCost;
+  }
+  static getChildNode(problem, parent, action) {
+    let childState = problem.results(action, parent.state);
+    let newPathCost = parent.pathCost + problem.stepCost(parent.state, action);
+    return new Node(childState, parent, action, newPathCost);
+  }
+}
+
 //FIFO
 class Queue {
   constructor() {
@@ -12,9 +50,9 @@ class Queue {
   static pop(queue) {
     return queue.array.shift();
   }
-  static insert(element, queue) {
+  static insert(node, queue) {
     let q = new Queue();
-    q.array = R.append(element, queue.array);
+    q.array = R.append(node, queue.array);
     return q;
   }
 }
@@ -28,35 +66,155 @@ class Stack extends Queue {
   static pop(stack) {
     return stack.array.shift();
   }
-  static insert(element, stack) {
+  static insert(node, stack) {
     let s = new Stack();
-    s.array = R.prepend(element, stack.array);
+    s.array = R.prepend(node, stack.array);
     return s;
   }
 }
 
-class Set {
+//this is not "pure" at all (except for index methods)
+//uses Node as described above
+//orders by smallest to largest (will be using cost)
+//uses a "minHeap" structure for speed
+class MaxPriorityQueue {
   constructor() {
-    this.object = {};
+    this.heap = [];
   }
-  static isEmpty(set) {
-      return R.keys(set.object).length === 0 ? true: false;
+  isEmpty() {
+    return this.heap.length < 1;
   }
-  static remove(element, set) {
-    let s = new Set();
-    s.object = R.dissoc(element, set.object)
-    return s;
+  swap(index1, index2) {
+    const tmp = this.heap[index1];
+    this.heap[index1] = this.heap[index2];
+    this.heap[index2] = tmp;
   }
+  peek() {
+    return this.heap[0];
+  }
+  insert(node) {
+    // push element to the end of the heap
+    this.heap.push(node);
+    // the index of the element we have just pushed
+    let index = this.heap.length - 1;
+    // if the element is greater than its parent:
+    // swap element with its parent
+    while (index !== 0 && this.heap[index].pathCost > this.heap[this.getParentIndex(index)].pathCost) {
+      this.swap(index, this.getParentIndex(index));
+      index = this.getParentIndex(index);
+    }
+  }
+  extractMax() {
+    // remove the first element from the heap
+    const root = this.heap.shift();
+    // put the last element to the front of the heap
+    // and remove the last element from the heap as it now
+    // sits at the front of the heap
+    this.heap.unshift(this.heap[this.heap.length - 1]);
+    this.heap.pop();
+    // correctly re-position heap
+    this.heapify(0);
+    return root;
+  }
+  heapify(index) {
+    let left = this.getLeftChildIndex(index);
+    let right = this.getRightChildIndex(index);
+    let smallest = index;
+    // if the left child is bigger than the node we are looking at
+    if (left < this.heap.length && this.heap[smallest].pathCost < this.heap[left].pathCost) {
+      smallest = left;
+    }
+    // if the right child is bigger than the node we are looking at
+    if (right < this.heap.length && this.heap[smallest].pathCost < this.heap[right].pathCost) {
+      smallest = right;
+    }
+    // if the value of smallest has changed, then some swapping needs to be done
+    // and this method needs to be called again with the swapped element
+    if (smallest != index) {
+      this.swap(smallest, index);
+      this.heapify(smallest);
+    }
+  }
+  getLeftChildIndex(index) {
+    return index * 2 + 1;
+  }
+  getRightChildIndex(index) {
+    return index * 2 + 2;
+  }
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
+}
 
-  static insert(element, set) {
-    let s = new Set();
-    s.object = R.assoc(element, true, set.object);
-    return s;
+class MinPriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
+  isEmpty() {
+    return this.heap.length < 1;
+  }
+  swap(index1, index2) {
+    const tmp = this.heap[index1];
+    this.heap[index1] = this.heap[index2];
+    this.heap[index2] = tmp;
+  }
+  peek() {
+    return this.heap[0];
+  }
+  insert(node) {
+    // push element to the end of the heap
+    this.heap.push(node);
+    // the index of the element we have just pushed
+    let index = this.heap.length - 1;
+    // if the element is smaller than its parent:
+    // swap element with its parent
+    while (index !== 0 && this.heap[index].pathCost < this.heap[this.getParentIndex(index)].pathCost) {
+      this.swap(index, this.getParentIndex(index));
+      index = this.getParentIndex(index);
+    }
+  }
+  extractMin() {
+    // remove the first element from the heap
+    const root = this.heap.shift();
+    // put the last element to the front of the heap
+    // and remove the last element from the heap as it now
+    // sits at the front of the heap
+    this.heap.unshift(this.heap[this.heap.length - 1]);
+    this.heap.pop();
+    // correctly re-position heap
+    this.heapify(0);
+    return root;
+  }
+  heapify(index) {
+    let left = this.getLeftChildIndex(index);
+    let right = this.getRightChildIndex(index);
+    let smallest = index;
+    // if the left child is smaller than the node we are looking at
+    if (left < this.heap.length && this.heap[smallest].pathCost > this.heap[left].pathCost) {
+      smallest = left;
+    }
+    // if the right child is smaller than the node we are looking at
+    if (right < this.heap.length && this.heap[smallest].pathCost > this.heap[right].pathCost) {
+      smallest = right;
+    }
+    // if the value of smallest has changed, then some swapping needs to be done
+    // and this method needs to be called again with the swapped element
+    if (smallest != index) {
+      this.swap(smallest, index);
+      this.heapify(smallest);
+    }
+  }
+  getLeftChildIndex(index) {
+    return index * 2 + 1;
+  }
+  getRightChildIndex(index) {
+    return index * 2 + 2;
+  }
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
   }
 }
 
 
 
-
-
-export { Queue, Stack, Set };
+export { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue };

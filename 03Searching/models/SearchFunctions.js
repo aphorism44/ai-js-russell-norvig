@@ -1,16 +1,16 @@
+import { Problem, Node, MinPriorityQueue  } from './SearchClasses.js';
 
+class AstarSearch = {
 
-class SearchFunctions = {
-
-  static isEmpty(queue) {
-    
+  constructor(problem) {
+    this.node = new Node()
   }
 
-  static insert(queue, element) {
-    return
-  }
+  //static insert(queue, element) {
+  //  return
+  //}
 
 
 }
 
-export default SearchFunctions;
+export { AstarSearch };

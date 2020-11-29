@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Queue, Stack, Set  } from '../03Searching/models/SearchClasses.js';
+import { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue  } from '../03Searching/models/SearchClasses.js';
 import R from 'ramda';
 
 describe("SearchClasses", function() {
@@ -51,17 +51,97 @@ describe("SearchClasses", function() {
     });
   });
 
-  describe("Set", function() {
-    it("should return 0 length when new", function() {
-      let s1 = new Set();
-      assert.equal(Set.isEmpty(s1), true);
+  describe("VacuumProblemTest", function() {
+    const initialState = { vacuumLocation: 'left', dirtLocations: ['left', 'right'] };
+
+    const goalStateSet = new Set();
+    goalStateSet.add({vacuumLocation: 'left', dirtLocations: []});
+    goalStateSet.add({vacuumLocation: 'right', dirtLocations: []});
+
+    let actionFunction = function(action, state) {
+      let actions = new Set();
+      actions.add('left');
+      actions.add('right');
+      actions.add('suck');
+      return actions;
+    }
+
+    let transitionFunction = function(action, state) {
+      let newState = JSON.parse(JSON.stringify(state))
+      switch(action) {
+        case 'left':
+          if (state.vacuumLocation === 'right')
+            newState.vacuumLocation = 'left';
+          break;
+        case 'right':
+          if (state.vacuumLocation === 'left')
+            newState.vacuumLocation = 'right';
+          break;
+        case 'suck':
+          if (state.vacuumLocation === 'right' && state.dirtLocations.includes('right'))
+            newState.dirtLocations = newState.dirtLocations.filter((l) => { return l != 'right'; });
+          else if (state.vacuumLocation === 'left' && state.dirtLocations.includes('left'))
+            newState.dirtLocations = newState.dirtLocations.filter((l) => { return l != 'left'; });
+          break;
+      }
+      return newState;
+    }
+
+    let stepCostFunction = function(state, action) {
+      return 1;
+    }
+    let vacuumWorldProblem = new Problem(initialState, goalStateSet, actionFunction
+      , transitionFunction, stepCostFunction);
+
+    it("should create node and child node properly", function() {
+      let root = new Node(initialState, null, null, 0);
+      let rightNode = Node.getChildNode(vacuumWorldProblem, root, 'right');
+      let suckNode = Node.getChildNode(vacuumWorldProblem, rightNode, 'suck');
+      assert.equal(JSON.stringify(root.state), JSON.stringify({ vacuumLocation: 'left', dirtLocations: ['left', 'right'] }));
+      assert.equal(JSON.stringify(rightNode.state), JSON.stringify({ vacuumLocation: 'right', dirtLocations: ['left', 'right'] }));
+      assert.equal(JSON.stringify(suckNode.state), JSON.stringify({ vacuumLocation: 'right', dirtLocations: ['left'] }));
     });
-    it("should use pure function when adding", function() {
-      let s1 = new Set();
-      let s2 = Set.insert(4, s1);
-      assert.equal(Set.isEmpty(s1), true);
-      assert.equal(Set.isEmpty(s2), false);
+    it("max priority queue should order Nodes left to right by decreasing cost", function() {
+      let n1 = new Node(initialState, null, null, 76);
+      let n2 = new Node(initialState, null, null, -23);
+      let n3 = new Node(initialState, null, null, 0);
+      let n4 = new Node(initialState, null, null, 42);
+      let n5 = new Node(initialState, null, null, 12);
+      let priorityQueue = new MaxPriorityQueue();
+      priorityQueue.insert(n1);
+      priorityQueue.insert(n2);
+      priorityQueue.insert(n3);
+      priorityQueue.insert(n4);
+      priorityQueue.insert(n5);
+      //console.log(priorityQueue);
+      let largest = priorityQueue.extractMax().pathCost;
+      while (!priorityQueue.isEmpty()) {
+        let next = priorityQueue.extractMax().pathCost;
+        assert(largest > next);
+        largest = next;
+      }
     });
+    it("min priority queue should order Nodes left to right by increasting cost", function() {
+      let n1 = new Node(initialState, null, null, 76);
+      let n2 = new Node(initialState, null, null, -23);
+      let n3 = new Node(initialState, null, null, 0);
+      let n4 = new Node(initialState, null, null, 42);
+      let n5 = new Node(initialState, null, null, 12);
+      let priorityQueue = new MinPriorityQueue();
+      priorityQueue.insert(n1);
+      priorityQueue.insert(n2);
+      priorityQueue.insert(n3);
+      priorityQueue.insert(n4);
+      priorityQueue.insert(n5);
+      //console.log(priorityQueue);
+      let smallest = priorityQueue.extractMin().pathCost;
+      while (!priorityQueue.isEmpty()) {
+        let next = priorityQueue.extractMin().pathCost;
+        assert(smallest < next);
+        smallest = next;
+      }
+    });
+    /*
     it("should use pure function when removing", function() {
       let s1 = new Set();
       let s2 = Set.insert(4, s1);
@@ -71,6 +151,8 @@ describe("SearchClasses", function() {
       assert.equal(Set.isEmpty(s2), false);
       assert.equal(Set.isEmpty(s3), true);
     });
+    */
   });
+
 
 });
