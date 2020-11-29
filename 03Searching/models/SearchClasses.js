@@ -2,9 +2,11 @@ import R from 'ramda';
 
 //problem (abstract sans functions), p. 66
 class Problem {
-  constructor(initialState, goalStateSet, actionFunction, transitionFunction, stepCostFunction) {
+  constructor(initialState, goalStateObjectSet, actionFunction, transitionFunction, stepCostFunction) {
     this.initialState = initialState;
-    this.goalStateSet = goalStateSet;
+    this.goalStateSet = new Set();
+    for (var obj of goalStateObjectSet)
+      this.goalStateSet.add(JSON.stringify(obj));
     this.actionFunction = actionFunction;
     this.transitionFunction = transitionFunction;
     this.stepCostFunction = stepCostFunction;
@@ -16,11 +18,20 @@ class Problem {
     return this.transitionFunction(action, state);
   }
   goalTest(state) {
-    return this.goalStateSet.has(state);
+    return this.goalStateSet.has(JSON.stringify(state));
   }
   stepCost(state, action) {
     return this.stepCostFunction(state, action);
   }
+  static extractSolutionActions(node) {
+    let actionSet = [];
+    actionSet.unshift(node.action);
+    //let newState = JSON.parse(JSON.stringify(state))
+  }
+  static extractStateSequence(node) {
+    let stateSet = [];
+  }
+
 }
 
 //node object, p. 79
@@ -147,14 +158,15 @@ class MaxPriorityQueue {
   returnNodeByState(state) {
     for (var i = 0; i < this.heap.length; i++)
       if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
-        return this.heap[i].state;
+        return this.heap[i];
     return null;
   }
   removeNodeByState(state) {
     for (var i = 0; i < this.heap.length; i++)
       if (JSON.stringify(this.heap[i].state) == JSON.stringify(state)) {
         let deleteNode = this.heap[i].state;
-        this.heap.array.splice(i, 1);
+        this.heap.splice(i, 1);
+        this.heapify(i);
         return deleteNode;
       }
     return null;
@@ -240,14 +252,15 @@ class MinPriorityQueue {
   returnNodeByState(state) {
     for (var i = 0; i < this.heap.length; i++)
       if (JSON.stringify(this.heap[i].state) == JSON.stringify(state))
-        return this.heap[i].state;
+        return this.heap[i];
     return null;
   }
   removeNodeByState(state) {
     for (var i = 0; i < this.heap.length; i++)
       if (JSON.stringify(this.heap[i].state) == JSON.stringify(state)) {
         let deleteNode = this.heap[i].state;
-        this.heap.array.splice(i, 1);
+        this.heap.splice(i, 1);
+        this.heapify(i);
         return deleteNode;
       }
     return null;

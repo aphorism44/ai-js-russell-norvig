@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue  } from '../03Searching/models/SearchClasses.js';
+import { AStarSearch } from '../03Searching/models/SearchFunctions.js';
 import R from 'ramda';
 
 describe("SearchClasses", function() {
@@ -119,13 +120,12 @@ describe("SearchClasses", function() {
       assert(priorityQueue.containsNodeState(initialState));
       assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
       assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
-      
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       assert.equal(priorityQueue.size(), 6);
       priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
       assert.equal(priorityQueue.size(), 5);
-      assert(!priorityQueue.containsNodeState(initialState));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState(initialState));
+      assert(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
       assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let largest = priorityQueue.extractMax().pathCost;
@@ -157,8 +157,8 @@ describe("SearchClasses", function() {
       assert.equal(priorityQueue.size(), 6);
       priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
       assert.equal(priorityQueue.size(), 5);
-      assert(!priorityQueue.containsNodeState(initialState));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert(priorityQueue.containsNodeState(initialState));
+      assert(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
       assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let smallest = priorityQueue.extractMin().pathCost;
@@ -168,17 +168,12 @@ describe("SearchClasses", function() {
         smallest = next;
       }
     });
-    /*
-    it("should use pure function when removing", function() {
-      let s1 = new Set();
-      let s2 = Set.insert(4, s1);
-      s2 = Set.insert(5, s2);
-      let s3 = Set.remove(4, s2);
-      s3 = Set.remove(5, s3);
-      assert.equal(Set.isEmpty(s2), false);
-      assert.equal(Set.isEmpty(s3), true);
+    it("Astar should return an answer", function() {
+      let searchVacuum = new AStarSearch(vacuumWorldProblem);
+      let vacuumEndNode = searchVacuum.solve();
+      console.log(vacuumEndNode);
+      assert(true);
     });
-    */
   });
 
 
