@@ -2,13 +2,13 @@ import { Problem } from '../03Searching/models/SearchClasses.js';
 import { getActionList, getActionStateList, aStarSearch } from '../03Searching/models/SearchFunctions.js';
 
 const toyProblem8Puzzle = function() {
-
-  let explored = new Set();
+  
   console.log("calculating 8-puzzle solution...")
-  const initialState = [ [7,2,4], [5, null, 6], [8,3,1] ];
+  //const initialState = [ [7,2,4], [5, null, 6], [8,3,1] ];
+  const initialState = [ [null,1, 2], [3, 4, 5], [6,7,8] ];
 
   const goalStateSet = new Set();
-  goalStateSet.add([ [null,1,2], [3, 4, 5], [6,7,8] ]);
+  goalStateSet.add([ [1,null,2], [3, 4, 5], [6,7,8] ]);
 
   let actionFunction = function(state) {
     //denotes which tile, relative to the empty space, is moved
@@ -106,9 +106,9 @@ const toyProblem8Puzzle = function() {
 
   let stateToStringFunction = function(node) {
     let stateString = "state: { [ ";
-    for (var row = 0; row < state.length; row++) {
-      for (var col = 0; col < state[0].length; col++) {
-        stateString += state[row][col] + ", "
+    for (var row = 0; row < node.state.length; row++) {
+      for (var col = 0; col < node.state[0].length; col++) {
+        stateString += node.state[row][col] + ", "
       }
       stateString = stateString.slice(0, -2)
       stateString += " ], [ "
@@ -137,9 +137,11 @@ const toyProblem8Puzzle = function() {
   let fullList = getActionStateList(solution8Node, stateToStringFunction);
   console.log(actionList);
   console.log(fullList);
+
 }
 
 const problemMapTraverse = function() {
+
 
 }
 

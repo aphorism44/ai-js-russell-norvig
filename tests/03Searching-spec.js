@@ -185,8 +185,6 @@ describe("SearchClasses", function() {
       let vacuumSolutionNode = aStarSearch(vacuumWorldProblem);
       let actionList = getActionList(vacuumSolutionNode);
       let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction);
-      console.log(fullList);
-
       assert(actionList.length > 0);
       assert(fullList.length > 0);
     });

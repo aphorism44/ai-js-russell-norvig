@@ -35,21 +35,19 @@ const aStarSearch = function(problem) {
     let frontier = new MinPriorityQueue();
     frontier.insert(firstNode);
     let explored = new Set();
-
     while (true) {
       if (frontier.isEmpty())
         return null;
       let node = frontier.extractMin();
-      console.log(node);
       if (problem.goalTest(node.state))
         return node;
-      explored.add(node.state);
+      explored.add(JSON.stringify(node.state));
       let actionSet = problem.actions(node.state);
       for (var action of actionSet) {
         let childNode = Node.getChildNode(problem, node, action);
-        if(!explored.has(childNode.state) && !frontier.containsNodeState(childNode.state))
+        if(!explored.has(JSON.stringify(childNode.state)) && !frontier.containsNodeState(childNode.state))
           frontier.insert(childNode);
-        let existingChildNode = frontier.returnNodeByState(childNode.state);
+        let existingChildNode = frontier.returnNodeByState(JSON.stringify(childNode.state));
         if (existingChildNode != null && existingChildNode.pathCost > childNode.pathCost) {
           frontier.removeNodeByState(existingChildNode.state);
           frontier.insert(childNode);

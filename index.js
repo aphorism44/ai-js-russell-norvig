@@ -1,4 +1,5 @@
 import { toyProblem8Puzzle, problemMapTraverse } from './03Searching/ch3.js';
 
-toyProblem8Puzzle();
+//8Problem works, but too complex to be solved quickly by classical search
+//toyProblem8Puzzle();
 problemMapTraverse();

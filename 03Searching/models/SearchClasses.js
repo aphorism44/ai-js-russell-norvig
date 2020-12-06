@@ -29,11 +29,6 @@ class Problem {
       return this.heuristicFunction(state, action);
     return 0;
   }
-  static extractSolutionActions(node) {
-    let actionSet = [];
-    actionSet.unshift(node.action);
-    //let newState = JSON.parse(JSON.stringify(state))
-  }
 }
 
 //node object, p. 79
