@@ -184,9 +184,10 @@ describe("SearchClasses", function() {
     it("Astar should return an answer", function() {
       let vacuumSolutionNode = aStarSearch(vacuumWorldProblem);
       let actionList = getActionList(vacuumSolutionNode);
-      let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction);
+      let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction, vacuumWorldProblem);
       assert(actionList.length > 0);
       assert(fullList.length > 0);
+      console.log(fullList);
     });
   });
 

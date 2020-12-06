@@ -22,7 +22,7 @@ class Problem {
     return this.goalStateSet.has(JSON.stringify(state));
   }
   stepCost(state, action) {
-    return this.stepCostFunction(state, action) + this.heuristicCost(state, action);
+    return this.stepCostFunction(state, action);
   }
   heuristicCost(state, action) {
     if (this.heuristicFunction != null)
@@ -38,6 +38,7 @@ class Node {
     this.parent = parent;
     this.action = action;
     this.pathCost = pathCost;
+    this.totalHeuristicCost = 0;
   }
   static getChildNode(problem, parent, action) {
     let childState = problem.results(action, parent.state);

@@ -12,7 +12,7 @@ const getActionList = function(solutionNode) {
   return actionList;
 }
 
-const getActionStateList = function(solutionNode, stateStringifyFunction) {
+const getActionStateList = function(solutionNode, stateStringifyFunction, problem) {
   if (solutionNode == null)
     return [];
   let node = solutionNode;
@@ -31,7 +31,8 @@ const getActionStateList = function(solutionNode, stateStringifyFunction) {
 //NOTE - if the heuristicFunction of the problem returns a constant (or doesn't exist)
 //, A* is equivlaent to Uniform Cost Search
 const aStarSearch = function(problem) {
-    let firstNode = new Node(problem.initialState, null, null, problem.heuristicCost(problem.initialState), null);
+    let firstNode = new Node(problem.initialState, null, null, 0, null);
+    firstNode.totalHeuristicCost = firstNode.pathCost + problem.heuristicCost(firstNode.state, null);
     let frontier = new MinPriorityQueue();
     frontier.insert(firstNode);
     let explored = new Set();
@@ -45,10 +46,12 @@ const aStarSearch = function(problem) {
       let actionSet = problem.actions(node.state);
       for (var action of actionSet) {
         let childNode = Node.getChildNode(problem, node, action);
+        //console.log(childNode);
+        childNode.totalHeuristicCost =  childNode.pathCost + problem.heuristicCost(childNode.state, action);
         if(!explored.has(JSON.stringify(childNode.state)) && !frontier.containsNodeState(childNode.state))
           frontier.insert(childNode);
         let existingChildNode = frontier.returnNodeByState(JSON.stringify(childNode.state));
-        if (existingChildNode != null && existingChildNode.pathCost > childNode.pathCost) {
+        if (existingChildNode != null && existingChildNode.totalHeuristicCost > childNode.totalHeuristicCost) {
           frontier.removeNodeByState(existingChildNode.state);
           frontier.insert(childNode);
         }
