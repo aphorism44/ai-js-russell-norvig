@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue  } from '../03Searching/models/SearchClasses.js';
-import { AStarSearch } from '../03Searching/models/SearchFunctions.js';
+import { getActionList, getActionStateList, aStarSearch } from '../03Searching/models/SearchFunctions.js';
 import R from 'ramda';
 
 describe("SearchClasses", function() {
@@ -59,7 +59,7 @@ describe("SearchClasses", function() {
     goalStateSet.add({vacuumLocation: 'left', dirtLocations: []});
     goalStateSet.add({vacuumLocation: 'right', dirtLocations: []});
 
-    let actionFunction = function(action, state) {
+    let actionFunction = function(state) {
       let actions = new Set();
       actions.add('left');
       actions.add('right');
@@ -91,6 +91,19 @@ describe("SearchClasses", function() {
     let stepCostFunction = function(state, action) {
       return 1;
     }
+
+    let stateToStringFunction = function(node) {
+      let stateString = "state: { vacuumLocation: ";
+      stateString += node.state.vacuumLocation;
+      stateString += ", dirtLocations: [ ";
+      for (var i = 0; i <  node.state.dirtLocations.length; i++)
+        stateString += node.state.dirtLocations[i] + ", ";
+      if (node.state.dirtLocations.length > 0)
+        stateString = stateString.slice(0, -2)
+      stateString += " ] }"
+      return stateString;
+    }
+
     let vacuumWorldProblem = new Problem(initialState, goalStateSet, actionFunction
       , transitionFunction, stepCostFunction);
 
@@ -169,10 +182,13 @@ describe("SearchClasses", function() {
       }
     });
     it("Astar should return an answer", function() {
-      let searchVacuum = new AStarSearch(vacuumWorldProblem);
-      let vacuumEndNode = searchVacuum.solve();
-      console.log(vacuumEndNode);
-      assert(true);
+      let vacuumSolutionNode = aStarSearch(vacuumWorldProblem);
+      let actionList = getActionList(vacuumSolutionNode);
+      let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction);
+      console.log(fullList);
+
+      assert(actionList.length > 0);
+      assert(fullList.length > 0);
     });
   });
 

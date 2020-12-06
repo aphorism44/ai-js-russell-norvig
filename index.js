@@ -1,1 +1,4 @@
-import { Problem, Node, MinPriorityQueue  } from './03Searching/models/SearchClasses.js';
+import { toyProblem8Puzzle, problemMapTraverse } from './03Searching/ch3.js';
+
+toyProblem8Puzzle();
+problemMapTraverse();

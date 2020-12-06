@@ -2,7 +2,7 @@ import R from 'ramda';
 
 //problem (abstract sans functions), p. 66
 class Problem {
-  constructor(initialState, goalStateObjectSet, actionFunction, transitionFunction, stepCostFunction) {
+  constructor(initialState, goalStateObjectSet, actionFunction, transitionFunction, stepCostFunction, heuristicFunction) {
     this.initialState = initialState;
     this.goalStateSet = new Set();
     for (var obj of goalStateObjectSet)
@@ -10,6 +10,7 @@ class Problem {
     this.actionFunction = actionFunction;
     this.transitionFunction = transitionFunction;
     this.stepCostFunction = stepCostFunction;
+    this.heuristicFunction = heuristicFunction;
   }
   actions(state) {
     return this.actionFunction(state);
@@ -21,17 +22,18 @@ class Problem {
     return this.goalStateSet.has(JSON.stringify(state));
   }
   stepCost(state, action) {
-    return this.stepCostFunction(state, action);
+    return this.stepCostFunction(state, action) + this.heuristicCost(state, action);
+  }
+  heuristicCost(state, action) {
+    if (this.heuristicFunction != null)
+      return this.heuristicFunction(state, action);
+    return 0;
   }
   static extractSolutionActions(node) {
     let actionSet = [];
     actionSet.unshift(node.action);
     //let newState = JSON.parse(JSON.stringify(state))
   }
-  static extractStateSequence(node) {
-    let stateSet = [];
-  }
-
 }
 
 //node object, p. 79
