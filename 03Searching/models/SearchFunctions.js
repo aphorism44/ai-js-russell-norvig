@@ -59,4 +59,14 @@ const aStarSearch = function(problem) {
   }
 }
 
-export { getActionList, getActionStateList, aStarSearch };
+//first-class function - converts sets to functions, since opt problems use goal functions, not sets
+const convertSetToFunction = function(set) {
+  let goalStateSet = new Set();
+  for (var obj of set)
+    goalStateSet.add(JSON.stringify(obj));
+  return function(state) {
+    return goalStateSet.has(state);
+  }
+}
+
+export { getActionList, getActionStateList, aStarSearch, convertSetToFunction };

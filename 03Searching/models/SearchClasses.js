@@ -2,11 +2,9 @@ import R from 'ramda';
 
 //problem (abstract sans functions), p. 66
 class Problem {
-  constructor(initialState, goalStateObjectSet, actionFunction, transitionFunction, stepCostFunction, heuristicFunction) {
+  constructor(initialState, goalStateFunction, actionFunction, transitionFunction, stepCostFunction, heuristicFunction) {
     this.initialState = initialState;
-    this.goalStateSet = new Set();
-    for (var obj of goalStateObjectSet)
-      this.goalStateSet.add(JSON.stringify(obj));
+    this.goalStateFunction = goalStateFunction;
     this.actionFunction = actionFunction;
     this.transitionFunction = transitionFunction;
     this.stepCostFunction = stepCostFunction;
@@ -19,7 +17,7 @@ class Problem {
     return this.transitionFunction(action, state);
   }
   goalTest(state) {
-    return this.goalStateSet.has(JSON.stringify(state));
+    return this.goalStateFunction(JSON.stringify(state));
   }
   stepCost(state, action) {
     return this.stepCostFunction(state, action);

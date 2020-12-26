@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue  } from '../03Searching/models/SearchClasses.js';
-import { getActionList, getActionStateList, aStarSearch } from '../03Searching/models/SearchFunctions.js';
+import { getActionList, getActionStateList, aStarSearch, convertSetToFunction } from '../03Searching/models/SearchFunctions.js';
 import R from 'ramda';
 
 describe("SearchClasses", function() {
@@ -58,6 +58,8 @@ describe("SearchClasses", function() {
     const goalStateSet = new Set();
     goalStateSet.add({vacuumLocation: 'left', dirtLocations: []});
     goalStateSet.add({vacuumLocation: 'right', dirtLocations: []});
+    const goalStateFunction = convertSetToFunction(goalStateSet);
+
 
     let actionFunction = function(state) {
       let actions = new Set();
@@ -104,7 +106,7 @@ describe("SearchClasses", function() {
       return stateString;
     }
 
-    let vacuumWorldProblem = new Problem(initialState, goalStateSet, actionFunction
+    let vacuumWorldProblem = new Problem(initialState, goalStateFunction, actionFunction
       , transitionFunction, stepCostFunction);
 
     it("should create node and child node properly", function() {

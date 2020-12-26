@@ -1,5 +1,5 @@
 import { Problem } from '../03Searching/models/SearchClasses.js';
-import { getActionList, getActionStateList, aStarSearch } from '../03Searching/models/SearchFunctions.js';
+import { getActionList, getActionStateList, aStarSearch, convertSetToFunction } from '../03Searching/models/SearchFunctions.js';
 
 const toyProblem8Puzzle = function() {
 
@@ -9,6 +9,7 @@ const toyProblem8Puzzle = function() {
 
   const goalStateSet = new Set();
   goalStateSet.add([ [1,null,2], [3, 4, 5], [6,7,8] ]);
+  const goalStateFunction = convertSetToFunction(goalStateSet);
 
   let actionFunction = function(state) {
     //denotes which tile, relative to the empty space, is moved
@@ -129,7 +130,7 @@ const toyProblem8Puzzle = function() {
     return misplaced;
   }
 
-  let problem8 = new Problem(initialState, goalStateSet, actionFunction
+  let problem8 = new Problem(initialState, goalStateFunction, actionFunction
     , transitionFunction, stepCostFunction, heuristicFunction);
 
   let solution8Node = aStarSearch(problem8);
@@ -147,6 +148,7 @@ const problemMapTraverse = function() {
 
   const goalStateSet = new Set();
   goalStateSet.add('Bucharest');
+  const goalStateFunction = convertSetToFunction(goalStateSet);
 
   let actionFunction = function(state) {
     let actions = new Set();
@@ -302,7 +304,7 @@ const problemMapTraverse = function() {
     return straightLineToBucharest.get(state);
   }
 
-  let problemMap = new Problem(initialState, goalStateSet, actionFunction
+  let problemMap = new Problem(initialState, goalStateFunction, actionFunction
     , transitionFunction, stepCostFunction, heuristicFunction);
 
   let mapSolutionNode = aStarSearch(problemMap);
@@ -320,6 +322,7 @@ const problemMissionariesCannibals = function() {
 
   const goalStateSet = new Set();
   goalStateSet.add({ leftBank: {missionary: 0, cannibal: 0 }, raft: {missionary: 0, cannibal: 0 }, rightBank: {missionary: 3, cannibal: 3 }});
+  const goalStateFunction = convertSetToFunction(goalStateSet);
 
   let actionFunction = function(state) {
     let actions = new Set();
@@ -430,7 +433,7 @@ const problemMissionariesCannibals = function() {
     return points;
   }
 
-  let problemCannibal = new Problem(initialState, goalStateSet, actionFunction
+  let problemCannibal = new Problem(initialState, goalStateFunction, actionFunction
     , transitionFunction, stepCostFunction, heuristicFunction);
 
   let cannibalSolutionNode = aStarSearch(problemCannibal);
