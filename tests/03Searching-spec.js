@@ -189,7 +189,7 @@ describe("SearchClasses", function() {
       let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction, vacuumWorldProblem);
       assert(actionList.length > 0);
       assert(fullList.length > 0);
-      console.log(fullList);
+      //console.log(fullList);
     });
   });
 
