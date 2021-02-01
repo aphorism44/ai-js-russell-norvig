@@ -1,4 +1,4 @@
-import { OptNode } from '../04BeyondClassical/models/Classes.js';
+import { OptNode } from './Classes.js';
 
 //optional boolean "isMin" means we're looking for a
 //minimum value, not maximum
@@ -10,23 +10,25 @@ const simulatedAnnealing = function(problem, tempSchedule, isMin) {
     if (temp == 0)
       return currentNode;
     let nextNode = getRandomSuccessorNode(problem, currentNode);
-    let deltaE = nextNode.value - currentNode.value;
     let randomProb = Math.random();
     if (isMin) {
-      if (deltaE < 0)
+      let deltaE = nextNode.value - currentNode.value;
+      if (deltaE > 0)
         currentNode  = nextNode;
-      else if (Math.exp(Math.abs(deltaE) / temp) >= randomProb)
+      else if (randomProb < Math.exp(deltaE / temp))
         currentNode = nextNode;
     } else {
+      let deltaE = currentNode.value - nextNode.value;
         if (deltaE > 0)
           currentNode = nextNode;
-        else if (Math.exp(deltaE / temp) >= randomProb)
+        else if (randomProb < Math.exp(deltaE / temp))
           currentNode = nextNode;
     }
+    time++;
   }
 }
 
-const getRandomSuccessorNode(problem, node) {
+const getRandomSuccessorNode = function(problem, node) {
   let possibleActions = Array.from(problem.actions(node.state));
   let randomAction = possibleActions[Math.floor(Math.random() * possibleActions.length)];
   return OptNode.getSuccessorNode(problem, randomAction, node.state);
@@ -34,8 +36,8 @@ const getRandomSuccessorNode(problem, node) {
 
 const getAnnealTemperatureSchedule = function() {
   let schedule = {};
-  let maxTemp = 1000;
-  let maxTime = 10000;
+  let maxTemp = 500;
+  let maxTime = 2000000;
   schedule[0] = maxTemp;
   for (var time = 1; time < maxTime; time++)
     schedule[time] = maxTemp * ((maxTime - time) / maxTime);
@@ -43,4 +45,12 @@ const getAnnealTemperatureSchedule = function() {
   return schedule;
 }
 
-export { simulatedAnnealing, getAnnealTemperatureSchedule };
+const getNodePrintable = function(node, stateStringifyFunction) {
+  if (node == null)
+    return null;
+  if (stateStringifyFunction != null)
+    return stateStringifyFunction(node);
+  return JSON.stringify(node);
+}
+
+export { simulatedAnnealing, getRandomSuccessorNode, getAnnealTemperatureSchedule, getNodePrintable };

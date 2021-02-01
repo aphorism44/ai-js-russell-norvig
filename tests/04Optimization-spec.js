@@ -1,20 +1,20 @@
 import assert from 'assert';
-import { OptProblem } from '../04BeyondClassical/models/Classes.js';
-import { getAnnealTemperatureSchedule } from '../04BeyondClassical/models/Functions.js';
+import { OptProblem } from '../04Optimization/models/Classes.js';
+import { simulatedAnnealing, getAnnealTemperatureSchedule, getNodePrintable } from '../04Optimization/models/Functions.js';
 
 
 describe("SearchFunctions", function() {
   describe("TempSchedule", function() {
     let s1 = new getAnnealTemperatureSchedule();
     it("should return max temp at 0 time", function() {
-      assert.equal(s1[0], 1000);
+      assert.equal(s1[0], 500);
     });
     it("should return 0 temp at max time", function() {
-      assert.equal(s1[10000], 0);
+      assert.equal(s1[2000000], 0);
     });
   });
 
-  describe("8Queen Problem Annealed", function() {
+  describe("8Queen Problem Annealed returns correct answer", function() {
     const initialState = [null,null,null,null,null,null,null,null];
 
     const goalStateFunction = function(state) {
@@ -134,12 +134,19 @@ describe("SearchFunctions", function() {
         }
         stateString += "|\n";
       }
+      stateString += "}"
       return stateString;
     }
 
-    let queen8Problem = new Problem(initialState, goalStateFunction, actionFunction
-      , transitionFunction, valueFunction);
+    let queen8Problem = new OptProblem(initialState, goalStateFunction, actionFunction
+      , transitionFunction, valueFunction, stateToStringFunction);
 
+    let queen8SolutionNode = simulatedAnnealing(queen8Problem, getAnnealTemperatureSchedule(), false);
+    console.log(queen8SolutionNode);
+    console.log(getNodePrintable(queen8SolutionNode.state, stateToStringFunction));
+    it("should solve the 8 queen problem", function() {
+      assert(queen8SolutionNode.value == 0)
+    });
 
   });
 
