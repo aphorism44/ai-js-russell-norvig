@@ -45,6 +45,54 @@ const getAnnealTemperatureSchedule = function() {
   return schedule;
 }
 
+//recursive, depth-first
+//returns a "plan", or array of actions that always succeeds
+//"path" = hash of states parallel to actions
+//NOTE - both arrays are backwards
+//null = FAILURE
+const andOrGraphSearch = function(problem) {
+  return orSearch(problem.initialState, problem, []);
+}
+
+const orSearch = function(state, problem, path) {
+  console.log("orSearch on state: " + JSON.stringify(state));
+  console.log("with path ");
+  console.log(path);
+  if (problem.goalTest(state)) {
+    console.log("passed goal test");
+    return [];
+  }
+  if (path.includes(JSON.stringify(state))) {
+    console.log("hit loop");
+    return null;
+  }
+  for (var action of problem.actions(state)) {
+    let tempPath = Array.from(path);
+    tempPath.unshift(JSON.stringify(state));
+    let plan = andSearch(problem.results(action, state), problem, tempPath);
+    if (plan != null) {
+      plan.unshift(action);
+      return plan;
+    }
+  }
+  return null;
+}
+
+const andSearch = function(stateSet, problem, path) {
+  //NOTE - pseudocode is VERY unclear here
+  let plans = [];
+  for (var state of stateSet) {
+    let plan = orSearch(state, problem, path);
+    if (plan == null)
+      return null;
+    else
+      plans.push(plan);
+  }
+  console.log("andSearch to return the following object: ");
+  console.log(plans);
+  return plans;
+}
+
 const getNodePrintable = function(node, stateStringifyFunction) {
   if (node == null)
     return null;
@@ -53,4 +101,4 @@ const getNodePrintable = function(node, stateStringifyFunction) {
   return JSON.stringify(node);
 }
 
-export { simulatedAnnealing, getRandomSuccessorNode, getAnnealTemperatureSchedule, getNodePrintable };
+export { simulatedAnnealing, getRandomSuccessorNode, getAnnealTemperatureSchedule, getNodePrintable, andOrGraphSearch };
