@@ -1,5 +1,4 @@
 import { OptNode } from './Classes.js';
-import * as util from 'util';
 
 //optional boolean "isMin" means we're looking for a
 //minimum value, not maximum
@@ -52,40 +51,44 @@ const getAnnealTemperatureSchedule = function() {
 //NOTE - both arrays are backwards
 //null = FAILURE
 const andOrGraphSearch = function(problem) {
-  return orSearch(problem.initialState, problem, []).reverse();
+  return orSearch(problem.initialState, problem, []);
 }
 
 const orSearch = function(state, problem, path) {
-  if (problem.goalTest(state))
+  console.log("orSearch on state: " + JSON.stringify(state));
+  console.log("with path ");
+  console.log(path);
+  if (problem.goalTest(state)) {
+    console.log("passed goal test");
     return [];
-  if (path.includes(JSON.stringify(state)))
+  }
+  if (path.includes(JSON.stringify(state))) {
+    console.log("hit loop");
     return null;
-
+  }
   for (var action of problem.actions(state)) {
     let tempPath = Array.from(path);
     tempPath.unshift(JSON.stringify(state));
     let plan = andSearch(problem.results(action, state), problem, tempPath);
     if (plan != null) {
-      console.log(action);
-      console.log(plan);
-      return plan.concat(action);
+      plan.unshift(action);
+      return plan;
     }
   }
   return null;
 }
 
 const andSearch = function(stateSet, problem, path) {
-  //NOTE - pseudocode is VERY unclear here, but it's meant
-  //to return a single plan (or action : state) for the states
-  // that return a non-null from orSearch
+  //NOTE - pseudocode is VERY unclear here
+  let plans = [];
   for (var state of stateSet) {
     let plan = orSearch(state, problem, path);
     if (plan == null)
       return null;
-    else {
+    else
       return plan;
-    }
   }
+  return null;
 }
 
 const getNodePrintable = function(node, stateStringifyFunction) {
