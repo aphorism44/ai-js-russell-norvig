@@ -1,7 +1,8 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import { OptProblem } from '../04Optimization/models/Classes.js';
 import { simulatedAnnealing, getAnnealTemperatureSchedule, getNodePrintable, andOrGraphSearch } from '../04Optimization/models/Functions.js';
 import { convertSetToFunction } from '../03Searching/models/SearchFunctions.js';
+import * as util from 'util';
 
 describe("SearchFunctions", function() {
   describe("TempSchedule", function() {
@@ -150,7 +151,7 @@ describe("SearchFunctions", function() {
 */
   });
 
-  describe("Vacuum World ND AndOr Tree returns correct answer", function() {
+  describe("Vacuum World AndOr Tree returns correct answer for ND environment", function() {
     const initialState = { vacuumLocation: 'left', dirtLocations: ['left', 'right'] };
 
     const goalStateSet = new Set();
@@ -201,11 +202,13 @@ describe("SearchFunctions", function() {
           newState2.dirtLocations = [];
           newStateSet.add(newState2);
           //drops dirt in current square
-          if (state.vacuumLocation === 'right' && !state.dirtLocations.includes('right'))
+          if (state.vacuumLocation === 'right' && !state.dirtLocations.includes('right')) {
             newState3.dirtLocations.push('right');
-          else if (state.vacuumLocation === 'left' && !state.dirtLocations.includes('left'))
+            newStateSet.add(newState3);
+          } else if (state.vacuumLocation === 'left' && !state.dirtLocations.includes('left')) {
             newState3.dirtLocations.push('left');
-          newStateSet.add(newState3);
+            newStateSet.add(newState3);
+          }
           break;
       }
       return newStateSet;
@@ -230,14 +233,12 @@ describe("SearchFunctions", function() {
     let nonDeterministicVacuumProblem = new OptProblem(initialState, goalStateFunction, actionFunction
       , transitionFunction, valueFunction);
 
-
     let NDVacuumPlan = andOrGraphSearch(nonDeterministicVacuumProblem);
     console.log(NDVacuumPlan);
+
     it("should solve the ND vacuum world", function() {
-        assert(NDVacuumPlan != null)
+        assert.ok(NDVacuumPlan != null)
     });
   });
-
-
 
 });

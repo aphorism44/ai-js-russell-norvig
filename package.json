@@ -21,9 +21,12 @@
   },
   "homepage": "https://github.com/aphorism44/ai-js-russell-norvig#readme",
   "devDependencies": {
-    "mocha": "^8.2.1"
+    "@babel/core": "^7.0.1",
+    "@babel/register": "^7.0.0",
+    "mocha": "^8.3.0"
   },
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
     "ramda": "^0.27.1"
   }
 }

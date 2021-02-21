@@ -1,7 +1,6 @@
-import assert from 'assert';
 import { Problem, Node, Queue, Stack, MaxPriorityQueue, MinPriorityQueue  } from '../03Searching/models/SearchClasses.js';
 import { getActionList, getActionStateList, aStarSearch, convertSetToFunction } from '../03Searching/models/SearchFunctions.js';
-import R from 'ramda';
+import * as assert from 'assert';
 
 describe("SearchClasses", function() {
   describe("Queue", function() {
@@ -132,21 +131,21 @@ describe("SearchClasses", function() {
       priorityQueue.insert(n5);
       priorityQueue.insert(n6);
       assert.equal(priorityQueue.size(), 6);
-      assert(priorityQueue.containsNodeState(initialState));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState(initialState));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       assert.equal(priorityQueue.size(), 6);
       priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
       assert.equal(priorityQueue.size(), 5);
-      assert(priorityQueue.containsNodeState(initialState));
-      assert(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState(initialState));
+      assert.ok(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let largest = priorityQueue.extractMax().pathCost;
       while (!priorityQueue.isEmpty()) {
         let next = priorityQueue.extractMax().pathCost;
-        assert(largest >= next);
+        assert.ok(largest >= next);
         largest = next;
       }
     });
@@ -165,21 +164,21 @@ describe("SearchClasses", function() {
       priorityQueue.insert(n5);
       priorityQueue.insert(n6);
       assert.equal(priorityQueue.size(), 6);
-      assert(priorityQueue.containsNodeState(initialState));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
-      assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
+      assert.ok(priorityQueue.containsNodeState(initialState));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.ok(priorityQueue.returnNodeByState(initialState).state, initialState);
       assert.equal(priorityQueue.size(), 6);
       priorityQueue.removeNodeByState({vacuumLocation: 'left', dirtLocations: []});
       assert.equal(priorityQueue.size(), 5);
-      assert(priorityQueue.containsNodeState(initialState));
-      assert(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
-      assert(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState(initialState));
+      assert.ok(!priorityQueue.containsNodeState({vacuumLocation: 'left', dirtLocations: []}));
+      assert.ok(priorityQueue.containsNodeState({vacuumLocation: 'right', dirtLocations: []}));
       assert.equal(priorityQueue.returnNodeByState(initialState).state, initialState);
       let smallest = priorityQueue.extractMin().pathCost;
       while (!priorityQueue.isEmpty()) {
         let next = priorityQueue.extractMin().pathCost;
-        assert(smallest <= next);
+        assert.ok(smallest <= next);
         smallest = next;
       }
     });
@@ -187,8 +186,8 @@ describe("SearchClasses", function() {
       let vacuumSolutionNode = aStarSearch(vacuumWorldProblem);
       let actionList = getActionList(vacuumSolutionNode);
       let fullList = getActionStateList(vacuumSolutionNode, stateToStringFunction, vacuumWorldProblem);
-      assert(actionList.length > 0);
-      assert(fullList.length > 0);
+      assert.ok(actionList.length > 0);
+      assert.ok(fullList.length > 0);
       //console.log(fullList);
     });
   });
