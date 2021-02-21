@@ -51,19 +51,21 @@ const getAnnealTemperatureSchedule = function() {
 //NOTE - both arrays are backwards
 //null = FAILURE
 const andOrGraphSearch = function(problem) {
-  return orSearch(problem.initialState, problem, []);
+  let inOrderArray =  orSearch(problem.initialState, problem, []).reverse();
+  inOrderArray.unshift({ action: 'N/A', state: problem.initialState });
+  return inOrderArray;
 }
 
 const orSearch = function(state, problem, path) {
-  console.log("orSearch on state: " + JSON.stringify(state));
-  console.log("with path ");
-  console.log(path);
+  //console.log("orSearch on state: " + JSON.stringify(state));
+  //console.log("with path ");
+  //console.log(path);
   if (problem.goalTest(state)) {
-    console.log("passed goal test");
+    //console.log("passed goal test");
     return [];
   }
   if (path.includes(JSON.stringify(state))) {
-    console.log("hit loop");
+    //console.log("hit loop");
     return null;
   }
   for (var action of problem.actions(state)) {
@@ -71,8 +73,7 @@ const orSearch = function(state, problem, path) {
     tempPath.unshift(JSON.stringify(state));
     let plan = andSearch(problem.results(action, state), problem, tempPath);
     if (plan != null) {
-      plan.unshift(action);
-      return plan;
+      return plan.concat({ action: action, state: state });
     }
   }
   return null;

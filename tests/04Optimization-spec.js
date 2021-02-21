@@ -234,7 +234,15 @@ describe("SearchFunctions", function() {
       , transitionFunction, valueFunction);
 
     let NDVacuumPlan = andOrGraphSearch(nonDeterministicVacuumProblem);
-    console.log(NDVacuumPlan);
+    //console.log(JSON.stringify(NDVacuumPlan));
+    /* format:
+    [{"action":"N/A","state":{"vacuumLocation":"left","dirtLocations":["left","right"]}}
+    ,{"action":"right","state":{"vacuumLocation":"left","dirtLocations":["left","right"]}}
+    ,{"action":"suck","state":{"vacuumLocation":"right","dirtLocations":["left","right"]}}
+    ,{"action":"left","state":{"vacuumLocation":"right","dirtLocations":["left"]}}
+    ,{"action":"suck","state":{"vacuumLocation":"left","dirtLocations":["left"]}}]
+
+    */
 
     it("should solve the ND vacuum world", function() {
         assert.ok(NDVacuumPlan != null)
