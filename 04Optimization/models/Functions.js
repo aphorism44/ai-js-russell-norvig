@@ -1,8 +1,8 @@
 import { OptNode } from './Classes.js';
 
-//optional boolean "isMin" means we're looking for a
-//minimum value, not maximum
-const simulatedAnnealing = function(problem, tempSchedule, isMin) {
+//optional boolean "isMax" means we're looking for a
+//maximum value, not minimum
+const simulatedAnnealing = function(problem, tempSchedule, isMax) {
   let currentNode = new OptNode(problem.initialState, problem);
   let time = 0;
   while (true) {
@@ -11,7 +11,7 @@ const simulatedAnnealing = function(problem, tempSchedule, isMin) {
       return currentNode;
     let nextNode = getRandomSuccessorNode(problem, currentNode);
     let randomProb = Math.random();
-    if (isMin) {
+    if (isMax) {
       let deltaE = nextNode.value - currentNode.value;
       if (deltaE > 0)
         currentNode  = nextNode;
@@ -34,10 +34,8 @@ const getRandomSuccessorNode = function(problem, node) {
   return OptNode.getSuccessorNode(problem, randomAction, node.state);
 }
 
-const getAnnealTemperatureSchedule = function() {
+const getAnnealTemperatureSchedule = function(maxTemp, maxTime) {
   let schedule = {};
-  let maxTemp = 500;
-  let maxTime = 2000000;
   schedule[0] = maxTemp;
   for (var time = 1; time < maxTime; time++)
     schedule[time] = maxTemp * ((maxTime - time) / maxTime);

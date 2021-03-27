@@ -6,7 +6,7 @@ import * as util from 'util';
 
 describe("SearchFunctions", function() {
   describe("TempSchedule", function() {
-    let s1 = new getAnnealTemperatureSchedule();
+    let s1 = new getAnnealTemperatureSchedule(500, 2000000);
     it("should return max temp at 0 time", function() {
       assert.equal(s1[0], 500);
     });
@@ -141,14 +141,13 @@ describe("SearchFunctions", function() {
 
     let queen8Problem = new OptProblem(initialState, goalStateFunction, actionFunction
       , transitionFunction, valueFunction, stateToStringFunction);
-      /*
-    let queen8SolutionNode = simulatedAnnealing(queen8Problem, getAnnealTemperatureSchedule(), false);
-    console.log(queen8SolutionNode);
-    console.log(getNodePrintable(queen8SolutionNode.state, stateToStringFunction));
+
+    let queen8SolutionNode = simulatedAnnealing(queen8Problem, getAnnealTemperatureSchedule(500, 2000000), false);
+    //console.log(queen8SolutionNode);
+    //console.log(getNodePrintable(queen8SolutionNode.state, stateToStringFunction));
     it("should solve the 8 queen problem", function() {
-      assert(queen8SolutionNode.value == 0)
+      assert.ok(queen8SolutionNode.value == 0)
     });
-*/
   });
 
   describe("Vacuum World AndOr Tree returns correct answer for ND environment", function() {
